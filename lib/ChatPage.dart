@@ -68,7 +68,7 @@ class _ChatPageState extends State<ChatPage> {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://192.168.0.104:8000/chat',
+          'http://192.168.0.107:8000/chat',
         ), // Replace with your server IP
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
