@@ -58,43 +58,44 @@ Shokti is an **intelligent energy management system** that combines a compact Io
 ---
 
 ## System Architecture
-<img width="3805" height="1993" alt="Image" src="https://github.com/user-attachments/assets/1d750660-7952-4c08-9954-fe8beda7a476" />
+<img width="3805" height="1993" alt="Image" src="https://github.com/user-attachments/assets/167d437e-40e9-4178-87e4-8154cfcf1183" />
 
 ---
 ## Project Structure
-
-lib/
-├─ main.dart                     App entrypoint, initializes Supabase & splash screen  
-├─ routes.dart                   Centralized route definitions for navigation  
-├─ Onboardpage.dart              Original onboarding screen (carousel + CTA)  
-├─ landingpage.dart                
-├─ CustomAppBar.dart             Reusable gradient app bar with back button  
-├─ LandingPageAppBar.dart        App bar variant with profile avatar  
-├─ ChatPage.dart                 Chat UI, sends messages to backend AI endpoint  
-├─ EnergyPage.dart               Room-based energy UI, shows charts and cost  
-├─ Tracker.dart                  Monthly tracker view (demo data)  
-├─ SetUpPage.dart                Post-signup profile setup  
-├─ chart/  
-│  ├─ energy_chart.dart          Line chart for daily energy usage  
-│  └─ prediction.dart            Forecast chart for predicted energy usage  
-├─ models/  
-│  └─ user_profile.dart          UserProfile model, handles JSON parsing  
-├─ utils/  
-│  ├─ beautiful_alerts.dart      Styled snackbars and dialogs  
-│  └─ supabase_config.dart       Supabase client initialization helper  
-└─ views/  
-   ├─ OnBoardPage.dart           Refined onboarding UI  
-   ├─ Login.dart                 Login screen with Supabase auth  
-   ├─ SignUp.dart                Signup screen with Supabase auth  
-   ├─ profile_page.dart          Displays user profile with edit option  
-   └─ update_profile_page.dart   Form to update user profile  
-
-assets/  
-├─ images/                       All app images and icons  
-
-data/  
-├─ data.json                     
-├─ predict.json                   
+ ```plaintext
+Shokti/
+├─ lib/
+│  ├─ main.dart                  # App entrypoint, initializes Supabase & splash screen
+│  ├─ routes.dart                # Centralized route definitions for navigation
+│  ├─ Onboardpage.dart           # Original onboarding screen (carousel + CTA)
+│  ├─ landingpage.dart           # Main app shell with bottom navigation
+│  ├─ CustomAppBar.dart          # Reusable gradient app bar with back button
+│  ├─ LandingPageAppBar.dart     # App bar variant for landing page with profile avatar
+│  ├─ ChatPage.dart              # Chat UI, sends messages to backend AI endpoint
+│  ├─ EnergyPage.dart            # Room-based energy UI, shows charts and cost
+│  ├─ Tracker.dart               # Monthly tracker view (demo data)
+│  ├─ SetUpPage.dart             # Post-signup profile setup
+│  ├─ chart/
+│  │   ├─ energy_chart.dart      # Line chart for daily energy usage
+│  │   └─ prediction.dart        # Forecast chart for predicted energy usage
+│  ├─ models/
+│  │   └─ user_profile.dart      # UserProfile model, handles JSON parsing
+│  ├─ utils/
+│  │   ├─ beautiful_alerts.dart  # Styled snackbars and dialogs
+│  │   └─ supabase_config.dart   # Supabase client initialization helper
+│  └─ views/
+│      ├─ OnBoardPage.dart       # Refined onboarding UI
+│      ├─ Login.dart             # Login screen with Supabase auth
+│      ├─ SignUp.dart            # Signup screen with Supabase auth
+│      ├─ profile_page.dart      # Displays user profile with edit option
+│      └─ update_profile_page.dart # Form to update user profile
+├─ assets/
+│  ├─ images/                    # App images (icons, illustrations, logos)
+│  └─ data/
+│      ├─ data.json               # Energy usage data
+│      └─ predict.json            # Predicted energy usage data
+└─ README.md
+  ````   
 
 
 ## Backend Repository  
