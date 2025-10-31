@@ -101,5 +101,10 @@ Shokti/
 ## Backend Repository  
 
 GitHub: [Shokti Backend](https://github.com/srs4929/Shokti_chat_backend.git)
+## Demo Video
+[Shokti Presentation](https://youtu.be/j7dwcX38_oE)
 
-
+## Team Members
+- Sumaiya Rahman Soma
+- Jobaer Hossain Tamim
+- Chowdhury Shafahid Rahman
