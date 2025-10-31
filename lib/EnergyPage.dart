@@ -11,28 +11,29 @@ class EnergyPage extends StatefulWidget {
 }
 
 class _EnergyPageState extends State<EnergyPage> {
-  late final Future<List<Map<String, dynamic>>> _dataFuture;
-  int _selectedRoom = 0; // 0 -> Room1 (Sub_metering_1), 1 -> Room2, 2 -> Room3
-  final double unitPrice = 3.72; // Price per kWh
+  late final Future<List<Map<String, dynamic>>>
+  _dataFuture; // Future for loading JSON data
+  int _selectedRoom =
+      0; // Currently selected room: 0 -> Room1, 1 -> Room2, 2 -> Room3
+  final double unitPrice = 3.72; // Price per kWh in local currency
   final List<double> thresholds = [
-    30.0,
-    100.0,
-    150.0,
-  ]; // Thresholds for Room 1, 2, and 3
+    30.0, // Room 1 threshold in Wh
+    100.0, // Room 2 threshold
+    150.0, // Room 3 threshold
+  ];
 
   @override
   void initState() {
     super.initState();
-    _dataFuture = _loadJson();
+    _dataFuture = _loadJson(); // Load energy data on init
   }
 
+  // Load JSON from assets and convert to a list of maps
   Future<List<Map<String, dynamic>>> _loadJson() async {
     final s = await rootBundle.loadString('assets/data/data.json');
     final parsed = json.decode(s) as List<dynamic>;
     return parsed.map((e) => Map<String, dynamic>.from(e as Map)).toList();
   }
-
-  // (old aggregation helper removed; we now render room-wise line charts)
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +44,7 @@ class _EnergyPageState extends State<EnergyPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 8),
+            // Page title
             Text(
               'Energy by Room',
               style:
@@ -54,6 +56,8 @@ class _EnergyPageState extends State<EnergyPage> {
                       .copyWith(color: Colors.green[900]),
             ),
             const SizedBox(height: 12),
+
+            // Room selector chips
             Row(
               children: List.generate(3, (i) {
                 return Padding(
@@ -69,6 +73,8 @@ class _EnergyPageState extends State<EnergyPage> {
               }),
             ),
             const SizedBox(height: 16),
+
+            // FutureBuilder to load energy data asynchronously
             Expanded(
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: _dataFuture,
@@ -81,19 +87,23 @@ class _EnergyPageState extends State<EnergyPage> {
                       child: Text('Error loading data: ${snap.error}'),
                     );
                   }
+
                   final data = snap.data ?? [];
                   if (data.isEmpty)
                     return const Center(
                       child: Text('No energy data available'),
                     );
 
-                  // For a line-style chart (room-wise), build FlSpots for the selected Sub_metering
+                  // Determine which Sub_metering data to display
                   final key = 'Sub_metering_${_selectedRoom + 1}';
                   final spots = <FlSpot>[];
+
+                  // Convert JSON data to FlSpot list for LineChart
                   for (final point in data) {
                     final hour = (point['Hour'] is num)
                         ? (point['Hour'] as num).toDouble()
                         : double.tryParse('${point['Hour']}') ?? 0.0;
+
                     final raw = point[key];
                     final y = (raw is num)
                         ? raw.toDouble()
@@ -101,6 +111,7 @@ class _EnergyPageState extends State<EnergyPage> {
                     spots.add(FlSpot(hour, double.parse(y.toStringAsFixed(2))));
                   }
 
+                  // Determine chart axis bounds
                   final double minX = spots.isNotEmpty
                       ? spots.map((s) => s.x).reduce((a, b) => a < b ? a : b)
                       : 0.0;
@@ -110,12 +121,12 @@ class _EnergyPageState extends State<EnergyPage> {
                   final double rawMaxY = spots.isNotEmpty
                       ? spots.map((s) => s.y).reduce((a, b) => a > b ? a : b)
                       : 0.0;
-                  // Ensure Y axis never goes negative and has a sensible top bound.
                   final double maxY = (rawMaxY * 1.2).clamp(
                     1.0,
                     double.infinity,
-                  );
+                  ); // Y-axis top padding
 
+                  // LineChartData builder
                   LineChartData lineData() {
                     final gradientColors = [
                       Colors.green.shade300,
@@ -182,7 +193,6 @@ class _EnergyPageState extends State<EnergyPage> {
                       ),
                       minX: minX,
                       maxX: maxX,
-                      // enforce non-negative Y axis
                       minY: 0,
                       maxY: maxY,
                       lineBarsData: [
@@ -206,6 +216,7 @@ class _EnergyPageState extends State<EnergyPage> {
                     );
                   }
 
+                  // Calculate total consumption and cost
                   final total = spots.fold(0.0, (p, s) => p + s.y);
                   final totalKWh = total / 1000;
                   final totalCost = totalKWh * unitPrice;
@@ -213,6 +224,7 @@ class _EnergyPageState extends State<EnergyPage> {
 
                   return ListView(
                     children: [
+                      // Threshold warning card
                       if (total > threshold)
                         Container(
                           margin: const EdgeInsets.only(bottom: 16),
@@ -235,7 +247,7 @@ class _EnergyPageState extends State<EnergyPage> {
                                   'Warning: Room ${_selectedRoom + 1} consumption exceeds threshold!\n'
                                   'Current: ${total.toStringAsFixed(1)} Wh\n'
                                   'Threshold: $threshold Wh\n'
-                                  'You are wasting ${(((total - threshold)/1000) * unitPrice).toStringAsFixed(2)} Tk by exceeding the threshold!',
+                                  'Extra cost: ${(((total - threshold) / 1000) * unitPrice).toStringAsFixed(2)} Tk',
                                   style: TextStyle(
                                     color: Colors.red.shade700,
                                     fontSize: 14,
@@ -246,6 +258,8 @@ class _EnergyPageState extends State<EnergyPage> {
                             ],
                           ),
                         ),
+
+                      // Energy chart card
                       Center(
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 720),
@@ -275,6 +289,7 @@ class _EnergyPageState extends State<EnergyPage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
+                                      // Total consumption
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -299,6 +314,7 @@ class _EnergyPageState extends State<EnergyPage> {
                                           ),
                                         ],
                                       ),
+                                      // Total cost
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.end,
@@ -312,7 +328,7 @@ class _EnergyPageState extends State<EnergyPage> {
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            '${totalCost.toStringAsFixed(2).replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')} Tk',
+                                            '${totalCost.toStringAsFixed(2).replaceAllMapped(RegExp(r"(\\d{1,3})(?=(\\d{3})+(?!\\d))"), (Match m) => "${m[1]},")} Tk',
                                             style: TextStyle(
                                               fontSize: 18,
                                               fontWeight: FontWeight.bold,
@@ -339,6 +355,4 @@ class _EnergyPageState extends State<EnergyPage> {
       ),
     );
   }
-
-  // legend helper removed - not used in the line-chart room view
 }

@@ -5,9 +5,9 @@ import 'package:shokti/CustomAppbar.dart';
 import 'package:shokti/views/Login.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-
+// Stateful widget for user setup/profile page
 class SetupPage extends StatefulWidget {
-  final String userId;
+  final String userId; // Current user's ID from auth
   const SetupPage({super.key, required this.userId});
 
   @override
@@ -15,12 +15,16 @@ class SetupPage extends StatefulWidget {
 }
 
 class _SetupPageState extends State<SetupPage> {
+  // Controller for full name input
   final _nameController = TextEditingController();
+
+  // Default selections
   String _homeType = 'House';
   List<String> _devices = [];
   String _language = 'en';
-  bool _isLoading = false;
+  bool _isLoading = false; // Loading state when saving profile
 
+  // Options for dropdowns / chips
   final List<String> homeTypes = ['Apartment', 'House'];
   final List<String> deviceOptions = [
     'AC',
@@ -29,6 +33,7 @@ class _SetupPageState extends State<SetupPage> {
     'Washing Machine',
   ];
 
+  // Toggle device selection when user taps a ChoiceChip
   void _toggleDevice(String device) {
     setState(() {
       _devices.contains(device)
@@ -37,15 +42,17 @@ class _SetupPageState extends State<SetupPage> {
     });
   }
 
+  // Save profile to Supabase
   Future<void> _saveProfile() async {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
-      _showError("Please enter your name.");
+      _showError("Please enter your name."); // Show error if name is empty
       return;
     }
 
-    setState(() => _isLoading = true);
+    setState(() => _isLoading = true); // Show loading indicator
     try {
+      // Insert profile data into Supabase 'user_profiles' table
       await Supabase.instance.client.from('user_profiles').insert({
         'auth_user_id': widget.userId,
         'name': name,
@@ -54,6 +61,7 @@ class _SetupPageState extends State<SetupPage> {
         'high_energy_devices': _devices,
       });
 
+      // Navigate to Login page after successful save
       if (mounted) {
         Navigator.pushReplacement(
           context,
@@ -61,12 +69,13 @@ class _SetupPageState extends State<SetupPage> {
         );
       }
     } catch (e) {
-      _showError("Unexpected error: $e");
+      _showError("Unexpected error: $e"); // Show any unexpected errors
     } finally {
-      setState(() => _isLoading = false);
+      setState(() => _isLoading = false); // Hide loading indicator
     }
   }
 
+  // Helper to show error messages via SnackBar
   void _showError(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -78,6 +87,7 @@ class _SetupPageState extends State<SetupPage> {
     );
   }
 
+  // Reusable "glass" container with slight transparency and shadow
   Widget _buildGlassField({required Widget child}) {
     return Container(
       decoration: BoxDecoration(
@@ -97,6 +107,7 @@ class _SetupPageState extends State<SetupPage> {
     );
   }
 
+  // Reusable text field for input
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -119,6 +130,7 @@ class _SetupPageState extends State<SetupPage> {
     );
   }
 
+  // Reusable dropdown field
   Widget _buildDropdown<T>({
     required String label,
     required T value,
@@ -156,10 +168,10 @@ class _SetupPageState extends State<SetupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: ("Setup Profile")),
+      appBar: CustomAppBar(title: ("Setup Profile")), // Custom AppBar
       body: Stack(
         children: [
-          // Background Gradient
+          // Background gradient
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -170,12 +182,13 @@ class _SetupPageState extends State<SetupPage> {
             ),
           ),
 
-          // Glassmorphic Scroll Area
+          // Scrollable content with padding
           SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Page intro text
                 Text(
                   "Let's personalize your experience",
                   style: GoogleFonts.poppins(
@@ -186,6 +199,7 @@ class _SetupPageState extends State<SetupPage> {
                 ),
                 const SizedBox(height: 30),
 
+                // Full name input
                 _buildTextField(
                   controller: _nameController,
                   label: "Full Name",
@@ -193,6 +207,7 @@ class _SetupPageState extends State<SetupPage> {
                 ),
                 const SizedBox(height: 20),
 
+                // Home type dropdown
                 _buildDropdown<String>(
                   label: "Home Type",
                   value: _homeType,
@@ -202,6 +217,7 @@ class _SetupPageState extends State<SetupPage> {
                 ),
                 const SizedBox(height: 20),
 
+                // Device selection
                 Text(
                   "High-Energy Devices",
                   style: GoogleFonts.poppins(
@@ -211,7 +227,6 @@ class _SetupPageState extends State<SetupPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
-
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
@@ -258,6 +273,7 @@ class _SetupPageState extends State<SetupPage> {
                 ),
                 const SizedBox(height: 20),
 
+                // Language dropdown
                 _buildDropdown<String>(
                   label: "Preferred Language",
                   value: _language,
@@ -267,6 +283,7 @@ class _SetupPageState extends State<SetupPage> {
                 ),
                 const SizedBox(height: 35),
 
+                // Save profile button
                 SizedBox(
                   width: double.infinity,
                   height: 55,

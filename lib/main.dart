@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shokti/Onboardpage.dart';
-import 'package:shokti/views/OnBoardPage.dart';
 import 'dart:async';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart'; //
@@ -56,7 +55,9 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(seconds: 4), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const OnboardingPage(title: 'Home page')),
+        MaterialPageRoute(
+          builder: (context) => const OnboardingPage(title: 'Home page'),
+        ),
       );
     });
   }

@@ -185,7 +185,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               'High-Energy Devices',
                               style: GoogleFonts.poppins(
                                 color: Colors.green.shade800,
-                                fontSize: 14,
+                                fontSize: 12,
                               ),
                             ),
                           ),

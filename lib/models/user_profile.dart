@@ -13,6 +13,7 @@ class UserProfile {
     this.highEnergyDevices = const [],
   });
 
+  /// Converts a JSON map into a `UserProfile` instance.
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     List<String> parseDevices(dynamic value) {
       if (value == null) return [];

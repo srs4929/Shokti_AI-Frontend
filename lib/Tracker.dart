@@ -2,10 +2,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shokti/CustomAppBar.dart';
 
+// Stateful widget to track monthly electricity usage
 class Tracker extends StatefulWidget {
-  /// If [useScaffold] is false the widget returns only its body
-  /// so it can be embedded inside another Scaffold without
-  /// producing duplicate app bars.
+  /// If [useScaffold] is false, only the body is returned
+  /// This allows embedding inside another Scaffold without duplicate app bars.
   final bool useScaffold;
 
   const Tracker({super.key, this.useScaffold = true});
@@ -15,19 +15,20 @@ class Tracker extends StatefulWidget {
 }
 
 class _TrackerState extends State<Tracker> {
-  final double threshold = 250;
-  final List<int> years = [2023, 2024, 2025];
-  int selectedYear = 2025;
+  final double threshold = 250; // Threshold in kWh for warning
+  final List<int> years = [2023, 2024, 2025]; // Available years
+  int selectedYear = 2025; // Default selected year
 
-  late Map<int, Map<String, double>> yearlyUsage;
+  late Map<int, Map<String, double>>
+  yearlyUsage; // Stores monthly usage data for each year
 
   @override
   void initState() {
     super.initState();
-    yearlyUsage = _generateFakeData();
+    yearlyUsage = _generateFakeData(); // Generate sample usage data on init
   }
 
-  /// Generate random usage data for multiple years
+  /// Generates random usage data (100–400 kWh) for each month and year
   Map<int, Map<String, double>> _generateFakeData() {
     final random = Random();
     final months = [
@@ -49,7 +50,7 @@ class _TrackerState extends State<Tracker> {
     for (var year in years) {
       data[year] = {
         for (var month in months)
-          month: 100.0 + random.nextInt(300), // 100–400 kWh
+          month: 100.0 + random.nextInt(300), // Random value between 100–400
       };
     }
     return data;
@@ -57,11 +58,13 @@ class _TrackerState extends State<Tracker> {
 
   @override
   Widget build(BuildContext context) {
-    final usageData = yearlyUsage[selectedYear]!;
+    final usageData =
+        yearlyUsage[selectedYear]!; // Get data for the selected year
 
+    // The main content of the tracker
     Widget body = Column(
       children: [
-        // Year selector
+        // Year selector dropdown
         Padding(
           padding: const EdgeInsets.all(12.0),
           child: DropdownButton<int>(
@@ -82,32 +85,32 @@ class _TrackerState extends State<Tracker> {
                 .toList(),
             onChanged: (year) {
               setState(() {
-                selectedYear = year!;
+                selectedYear = year!; // Update the selected year
               });
             },
           ),
         ),
 
-        // Grid of months (scrollable)
+        // Scrollable grid of months
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: GridView.builder(
               shrinkWrap: true,
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: usageData.length,
+              itemCount: usageData.length, // 12 months
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3, // 3 per row
+                crossAxisCount: 3, // 3 boxes per row
                 crossAxisSpacing: 12,
                 mainAxisSpacing: 12,
               ),
               itemBuilder: (context, index) {
                 String month = usageData.keys.elementAt(index);
                 double value = usageData[month]!;
-                bool crossed = value > threshold;
+                bool crossed = value > threshold; // Check if threshold exceeded
 
                 return AspectRatio(
-                  aspectRatio: 1, // keeps each box square
+                  aspectRatio: 1, // Makes each box square
                   child: Container(
                     decoration: BoxDecoration(
                       color: crossed ? Colors.red[100] : Colors.green[100],
@@ -138,11 +141,13 @@ class _TrackerState extends State<Tracker> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          "${value.toStringAsFixed(0)} kWh",
+                          "${value.toStringAsFixed(0)} kWh", // Display usage
                           style: const TextStyle(fontSize: 12),
                         ),
                         Text(
-                          crossed ? "Threshold Crossed" : "Within Limit",
+                          crossed
+                              ? "Threshold Crossed"
+                              : "Within Limit", // Warning
                           style: TextStyle(
                             fontSize: 11,
                             color: crossed
@@ -162,6 +167,7 @@ class _TrackerState extends State<Tracker> {
       ],
     );
 
+    // Wrap with Scaffold if requested
     if (widget.useScaffold) {
       return Scaffold(
         appBar: const CustomAppBar(title: "Monthly Tracker"),
@@ -169,6 +175,6 @@ class _TrackerState extends State<Tracker> {
       );
     }
 
-    return body;
+    return body; // Return only body if embedded in another Scaffold
   }
 }

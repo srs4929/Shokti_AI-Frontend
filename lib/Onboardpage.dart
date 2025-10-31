@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shokti/views/Login.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:shokti/views/SignUp.dart';
+
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key, required this.title});
   final String title;
@@ -144,9 +144,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 onTap: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => const Login(),
-                    ),
+                    MaterialPageRoute(builder: (context) => const Login()),
                   );
                 },
                 child: Container(
@@ -176,7 +174,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
               ),
             ),
-           
           ],
         ),
       ),

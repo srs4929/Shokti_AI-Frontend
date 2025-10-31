@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
-  final VoidCallback? onBack;
+  final String title; // AppBar title text
+  final VoidCallback? onBack; // Optional callback for back button
 
   const CustomAppBar({super.key, required this.title, this.onBack});
 
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
-      preferredSize: const Size.fromHeight(90),
+      preferredSize: const Size.fromHeight(90), // Container height for AppBar
       child: Container(
         decoration: const BoxDecoration(
+          // Gradient background
           gradient: LinearGradient(
             colors: [
               Color.fromARGB(255, 20, 77, 22),
@@ -21,6 +22,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
+          // Rounded bottom corners
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(25),
             bottomRight: Radius.circular(25),
@@ -30,6 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         child: SafeArea(
           child: Row(
             children: [
+              // Back button
               IconButton(
                 icon: const Icon(
                   Icons.arrow_back_ios,
@@ -38,12 +41,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 onPressed: () {
                   if (onBack != null) {
-                    onBack!();
+                    onBack!(); // Execute custom back callback if provided
                   } else {
-                    Navigator.pop(context);
+                    Navigator.pop(context); // Default back navigation
                   }
                 },
               ),
+              // AppBar title
               Expanded(
                 child: Text(
                   title,
@@ -62,5 +66,5 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(110);
+  Size get preferredSize => const Size.fromHeight(110); // Overall preferred size
 }
