@@ -105,7 +105,7 @@ GitHub: [Shokti Backend](https://github.com/srs4929/Shokti_chat_backend.git)
 [Shokti Presentation](https://youtu.be/j7dwcX38_oE)
 
 ## Documentation
-[Documentation.pdf](https://github.com/user-attachments/files/23266926/Team.Dev_Mavericks_Documentation.pdf)
+[Documentation.pdf](https://github.com/user-attachments/files/23280210/Team.Dev_Mavericks_Shokti_Documentation.pdf)
 
 ## Team Members
 - Sumaiya Rahman Soma
